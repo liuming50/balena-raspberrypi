@@ -1,6 +1,11 @@
 Change log
 -----------
 
+# v2.48.0+rev5
+## (2020-05-09)
+
+* Fix bluetooth data drop on rpi3 v1.2 [Florin Sarbu]
+
 # v2.48.0+rev4
 ## (2020-04-24)
 

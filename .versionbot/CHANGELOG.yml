@@ -1,4 +1,39 @@
 - commits:
+    - subject: Fix bluetooth data drop on rpi3 v1.2
+      hash: d2c1750389df65b846dda087aebcad33ecbfb517
+      body: |
+        The rpi3 v1.2 lacks hardware flow control for the uart used for
+        bluetooth. This fact coupled with an apparent change in scheduling
+        introduced between the 4.14 and 4.19 kernels made the SoC drop UART
+        data. See for details:
+        https://github.com/raspberrypi/firmware/issues/
+        1150#issuecomment-518654921
+
+        The workaround for this is therefore to lower the baudrate so that we
+        decrease the chance of having too much lost data.
+
+        This change here should be revisited when meta-raspberrypi switches to
+        kernel 5.x as I have tested the UART data drop on kernel 5.4.38 and did
+        notice way less data drop with the default 921600 baudrate and playing
+        audio over bt was a good experience overall with that kernel. (tested
+        using balenaSound v2.1.7).
+
+        Note that this change will only decrease the baudrate for bt equipped
+        rpi variants that lack hw flow control (i.e. just the rpi3 v1.2).
+        See for details:
+        https://github.com/raspberrypi/firmware/issues/
+        1150#issuecomment-603116313
+      footer:
+        Fixes: 'https://github.com/balena-os/balena-raspberrypi/issues/476'
+        fixes: 'https://github.com/balena-os/balena-raspberrypi/issues/476'
+        Changelog-entry: Fix bluetooth data drop on rpi3 v1.2
+        changelog-entry: Fix bluetooth data drop on rpi3 v1.2
+        Signed-off-by: Florin Sarbu <florin@balena.io>
+        signed-off-by: Florin Sarbu <florin@balena.io>
+      author: Florin Sarbu
+  version: 2.48.0+rev5
+  date: 2020-05-09T06:18:58.090Z
+- commits:
     - subject: Use compressed kernel images to boot the RaspberryPi4-64
       hash: eafd5b4759a81b9ff638ea371df30f642242d81b
       body: |
