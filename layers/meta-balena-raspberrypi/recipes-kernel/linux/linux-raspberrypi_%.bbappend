@@ -13,6 +13,7 @@ SRC_URI_append = " \
 	file://0001-Add-npe-x500-m3-overlay.patch \
 	file://0006-overlays-Add-Hyperpixel4-overlays.patch \
 	file://0001-waveshare-sim7600-Add-dtbo-for-this-modem.patch \
+	file://0001-arm-add-seeed-voicecard-overlay-files.patch \
 "
 
 SRC_URI_append_raspberrypi4-64 = " \

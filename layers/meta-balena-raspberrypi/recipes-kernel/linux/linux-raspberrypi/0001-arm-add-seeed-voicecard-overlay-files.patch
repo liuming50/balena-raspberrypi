@@ -1,0 +1,332 @@
+From 92874c72aa35b3b3fc3a07a2b72195244a1a0ce3 Mon Sep 17 00:00:00 2001
+From: Ming Liu <liu.ming50@gmail.com>
+Date: Fri, 29 May 2020 14:59:35 +0200
+Subject: [PATCH] arm: add seeed-voicecard overlay files
+
+Upstream-Status: Pending
+
+Signed-off-by: Ming Liu <liu.ming50@gmail.com>
+---
+ arch/arm/boot/dts/overlays/Makefile           |   3 +
+ .../overlays/seeed-2mic-voicecard-overlay.dts |  86 +++++++++++++
+ .../overlays/seeed-4mic-voicecard-overlay.dts |  75 +++++++++++
+ .../overlays/seeed-8mic-voicecard-overlay.dts | 118 ++++++++++++++++++
+ 4 files changed, 282 insertions(+)
+ create mode 100644 arch/arm/boot/dts/overlays/seeed-2mic-voicecard-overlay.dts
+ create mode 100644 arch/arm/boot/dts/overlays/seeed-4mic-voicecard-overlay.dts
+ create mode 100644 arch/arm/boot/dts/overlays/seeed-8mic-voicecard-overlay.dts
+
+diff --git a/arch/arm/boot/dts/overlays/Makefile b/arch/arm/boot/dts/overlays/Makefile
+index bf6903a2ac0a..87c9658ed169 100644
+--- a/arch/arm/boot/dts/overlays/Makefile
++++ b/arch/arm/boot/dts/overlays/Makefile
+@@ -144,6 +144,9 @@ dtbo-$(CONFIG_ARCH_BCM2835) += \
+ 	sdhost.dtbo \
+ 	sdio.dtbo \
+ 	sdtweak.dtbo \
++	seeed-2mic-voicecard.dtbo \
++	seeed-4mic-voicecard.dtbo \
++	seeed-8mic-voicecard.dtbo \
+ 	smi.dtbo \
+ 	smi-dev.dtbo \
+ 	smi-nand.dtbo \
+diff --git a/arch/arm/boot/dts/overlays/seeed-2mic-voicecard-overlay.dts b/arch/arm/boot/dts/overlays/seeed-2mic-voicecard-overlay.dts
+new file mode 100644
+index 000000000000..1bb5d7fe0f00
+--- /dev/null
++++ b/arch/arm/boot/dts/overlays/seeed-2mic-voicecard-overlay.dts
+@@ -0,0 +1,86 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++    compatible = "brcm,bcm2708";
++
++    fragment@0 {
++        target = <&i2s>;
++        __overlay__ {
++            status = "okay";
++        };
++    };
++    fragment@1 {
++		target-path="/";
++		__overlay__ {
++                        wm8960_mclk: wm8960_mclk {
++                                compatible = "fixed-clock";
++                                #clock-cells = <0>;
++                                clock-frequency = <12288000>;
++                        };
++
++		};
++    };
++    fragment@2 {
++		target = <&i2c1>;
++		__overlay__ {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "okay";
++
++			wm8960: wm8960{
++				compatible = "wlf,wm8960";
++				reg = <0x1a>;
++				#sound-dai-cells = <0>;
++				AVDD-supply = <&vdd_5v0_reg>;
++				DVDD-supply = <&vdd_3v3_reg>;
++			};
++		};
++    };
++
++
++    fragment@3 {
++        target = <&sound>;
++        slave_overlay: __overlay__ {
++                compatible = "simple-audio-card";
++                simple-audio-card,format = "i2s";
++                simple-audio-card,name = "seeed-2mic-voicecard"; 
++                status = "okay";
++                simple-audio-card,widgets =
++                        "Microphone", "Mic Jack",
++                        "Line", "Line In",
++                        "Line", "Line Out",
++                        "Speaker", "Speaker",
++                        "Headphone", "Headphone Jack";
++                simple-audio-card,routing =
++                        "Headphone Jack", "HP_L",
++                        "Headphone Jack", "HP_R",
++                        "Speaker", "SPK_LP",
++                        "Speaker", "SPK_LN",
++                        "LINPUT1", "Mic Jack",
++                        "LINPUT3", "Mic Jack",
++                        "RINPUT1", "Mic Jack",
++                        "RINPUT2", "Mic Jack";
++
++
++
++
++                simple-audio-card,cpu {
++                    sound-dai = <&i2s>;
++                };
++                dailink0_slave: simple-audio-card,codec {
++                    sound-dai = <&wm8960>;
++			clocks = <&wm8960_mclk>;
++			clock-names = "mclk";
++
++                };
++        };
++    };
++
++    __overrides__ {
++        alsaname = <&slave_overlay>,"simple-audio-card,name";
++        compatible = <&wm8960>,"compatible";
++        master = <0>,"=2!3";
++    };
++};
++
+diff --git a/arch/arm/boot/dts/overlays/seeed-4mic-voicecard-overlay.dts b/arch/arm/boot/dts/overlays/seeed-4mic-voicecard-overlay.dts
+new file mode 100644
+index 000000000000..de7213bbef72
+--- /dev/null
++++ b/arch/arm/boot/dts/overlays/seeed-4mic-voicecard-overlay.dts
+@@ -0,0 +1,75 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++	compatible = "brcm,bcm2708";
++
++	fragment@0 {
++		target = <&i2s>;
++		__overlay__ {
++			#sound-dai-cells = <0>;
++			status = "okay";
++		};
++	};
++
++	fragment@1 {
++		target-path = "/clocks";
++		__overlay__ {
++			ac108_mclk: codec-mclk {
++				compatible = "fixed-clock";
++				#clock-cells = <0>;
++				clock-frequency = <24000000>;
++			};  
++		};
++	};
++
++	fragment@2 {
++		target = <&i2c1>;
++		__overlay__ {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "okay";
++
++			ac108_a: ac108@3b{
++				compatible = "x-power,ac108_0";
++				reg = <0x3b>;
++				#sound-dai-cells = <0>;
++				data-protocol = <0>;
++			};
++		};
++	};
++
++
++	fragment@3 {
++		target = <&sound>;
++
++		sound_overlay: __overlay__ {
++			compatible = "seeed-voicecard";
++			seeed-voice-card,format = "dsp_a";
++			seeed-voice-card,name = "seeed-4mic-voicecard"; 
++			status = "okay";
++		
++			seeed-voice-card,bitclock-master = <&codec_dai>;
++			seeed-voice-card,frame-master = <&codec_dai>;
++			seeed-voice-card,channels-playback-override = <4>;
++			seeed-voice-card,channels-capture-override  = <4>;
++
++			cpu_dai: seeed-voice-card,cpu {
++				sound-dai = <&i2s>;
++				dai-tdm-slot-num     = <2>;
++				dai-tdm-slot-width   = <32>;
++				dai-tdm-slot-tx-mask = <1 1 0 0>;
++				dai-tdm-slot-rx-mask = <1 1 0 0>;
++			};
++			codec_dai: seeed-voice-card,codec {
++				sound-dai = <&ac108_a>;
++				clocks =  <&ac108_mclk>;
++			};
++		};
++	};
++
++	__overrides__ {
++		card-name = <&sound_overlay>,"seeed-voice-card,name";
++	};
++};
++
+diff --git a/arch/arm/boot/dts/overlays/seeed-8mic-voicecard-overlay.dts b/arch/arm/boot/dts/overlays/seeed-8mic-voicecard-overlay.dts
+new file mode 100644
+index 000000000000..6d60469f0f8a
+--- /dev/null
++++ b/arch/arm/boot/dts/overlays/seeed-8mic-voicecard-overlay.dts
+@@ -0,0 +1,118 @@
++/dts-v1/;
++/plugin/;
++
++/ {
++	compatible = "brcm,bcm2708";
++
++	fragment@0 {
++		target = <&i2s>;
++		__overlay__ {
++			#sound-dai-cells = <0>;
++			status = "okay";
++		};
++	};
++
++	fragment@1 {
++		target-path = "/clocks";
++		__overlay__ {
++			ac10x_mclk: codec-mclk {
++				compatible = "fixed-clock";
++				#clock-cells = <0>;
++				clock-frequency = <24000000>;
++			};  
++		};
++	};
++
++	fragment@2 {
++		target = <&gpio>;
++		__overlay__ {
++			spk_amp_pins: spk_pins {
++				brcm,pins = <17 22>;
++				brcm,function = <1 0>; /* out in */
++				brcm,pull = <0 0>;     /* -   - */
++			};
++			gpclk0_pins: gpclk0_pins {
++				brcm,pins = <4>;
++				brcm,function = <4>; /* alt func 0 */
++				brcm,pull = <0>;     /* - */
++			};
++		};
++	};
++
++	fragment@3 {
++		target = <&i2c1>;
++		__overlay__ {
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "okay";
++
++			ac101: ac101@1a{
++				compatible = "x-power,ac101";
++				pinctrl-names = "default";
++				pinctrl-0 = <&spk_amp_pins &gpclk0_pins>;
++				spk-amp-switch-gpios = <&gpio 17 0>;
++				switch-irq-gpios = <&gpio 22 0>;
++				reg = <0x1a>;
++				#sound-dai-cells = <0>;
++			};
++
++			ac108_a: ac108@35{
++				compatible = "x-power,ac108_0";
++				reg = <0x35>;
++				#sound-dai-cells = <0>;
++				data-protocol = <0>;
++				tdm-chips-count = <2>;
++			};
++
++			ac108_b: ac108@3b{
++				compatible = "x-power,ac108_1";
++				reg = <0x3b>;
++				#sound-dai-cells = <0>;
++				data-protocol = <0>;
++				tdm-chips-count = <2>;
++			};
++		};
++	};
++
++	fragment@4 {
++		target = <&sound>;
++
++		sound_overlay: __overlay__ {
++			compatible = "seeed-voicecard";
++			seeed-voice-card,name = "seeed-8mic-voicecard"; 
++			seeed-voice-card,channels-playback-override = <8>;
++			seeed-voice-card,channels-capture-override  = <8>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "okay";
++
++			seeed-voice-card,dai-link@0 {
++				format = "dsp_a";
++				bitclock-master = <&codec0_dai>;
++				frame-master = <&codec0_dai>;
++				/* bitclock-inversion; */
++				/* frame-inversion; */
++				reg = <0>;
++
++				cpu {
++					sound-dai = <&i2s>;
++					dai-tdm-slot-num     = <2>;
++					dai-tdm-slot-width   = <32>;
++					dai-tdm-slot-tx-mask = <1 1 0 0>;
++					dai-tdm-slot-rx-mask = <1 1 0 0>;
++				};
++
++				codec0_dai: codec {
++					sound-dai = <&ac108_a>;
++					clocks =  <&ac10x_mclk>;
++					system-clock-id = <1>;
++				};
++			};
++		};
++	};
++
++	__overrides__ {
++		card-name = <&sound_overlay>,"seeed-voice-card,name";
++	};
++};
++
+-- 
+2.26.2
+
