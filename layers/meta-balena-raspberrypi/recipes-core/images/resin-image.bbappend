@@ -68,4 +68,4 @@ make_swap () {
     mkswap ${IMAGE_ROOTFS}/swap
     echo "/swap                swap        swap      defaults              0  0" >> ${IMAGE_ROOTFS}${sysconfdir}/fstab
 }
-IMAGE_PREPROCESS_COMMAND += "make_swap ; "
+#IMAGE_PREPROCESS_COMMAND += "make_swap ; "
