@@ -86,3 +86,5 @@ BB_DISKMON_DIRS = "\
 CONF_VERSION = "1"
 
 HOSTTOOLS += "docker iptables"
+
+IMAGE_INSTALL_append = " seeed-voicecard seeed-voicecard-module"
