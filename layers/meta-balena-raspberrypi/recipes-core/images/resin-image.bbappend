@@ -60,10 +60,10 @@ DEPENDS += "util-linux-native"
 
 IMAGE_ROOTFS_SIZE = "1600000"
 
-# make a 1G swap file on /swap
+# make a 512 swap file on /swap
 make_swap () {
     rm -rf ${IMAGE_ROOTFS}/swap
-    dd if=/dev/zero of=${IMAGE_ROOTFS}/swap bs=1M count=1024
+    dd if=/dev/zero of=${IMAGE_ROOTFS}/swap bs=1M count=512
     chmod 0600 ${IMAGE_ROOTFS}/swap
     mkswap ${IMAGE_ROOTFS}/swap
     echo "/swap                swap        swap      defaults              0  0" >> ${IMAGE_ROOTFS}${sysconfdir}/fstab
