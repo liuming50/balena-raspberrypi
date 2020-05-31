@@ -55,3 +55,17 @@ IMAGE_INSTALL_append_revpi-core-3 = " picontrol"
 IMAGE_INSTALL_append_raspberrypi4-64 = " flashrom userlandtools dtc rpi-eeprom"
 
 RPI_KERNEL_DEVICETREE_remove_revpi-core-3 = "bcm2708-rpi-zero-w.dtb bcm2710-rpi-3-b-plus.dtb bcm2711-rpi-4-b.dtb"
+
+DEPENDS += "util-linux-native"
+
+IMAGE_ROOTFS_SIZE = "1600000"
+
+# make a 1G swap file on /swap
+make_swap () {
+    rm -rf ${IMAGE_ROOTFS}/swap
+    dd if=/dev/zero of=${IMAGE_ROOTFS}/swap bs=1M count=1024
+    chmod 0600 ${IMAGE_ROOTFS}/swap
+    mkswap ${IMAGE_ROOTFS}/swap
+    echo "/swap                swap        swap      defaults              0  0" >> ${IMAGE_ROOTFS}${sysconfdir}/fstab
+}
+IMAGE_PREPROCESS_COMMAND += "make_swap ; "
