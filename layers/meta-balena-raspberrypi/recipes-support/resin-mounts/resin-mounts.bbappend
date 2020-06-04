@@ -1,4 +1,4 @@
-FILESEXTRAPATHS_prepend_revpi-core-3 := "${THISDIR}/files:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI_append_revpi-core-3 = "\
 	file://resin-boot.conf \
