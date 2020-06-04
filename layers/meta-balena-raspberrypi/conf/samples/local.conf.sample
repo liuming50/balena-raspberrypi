@@ -87,4 +87,6 @@ CONF_VERSION = "1"
 
 HOSTTOOLS += "docker iptables"
 
+# Customized variables
+DEVELOPMENT_IMAGE = "1"
 IMAGE_INSTALL_append = " seeed-voicecard seeed-voicecard-module"
