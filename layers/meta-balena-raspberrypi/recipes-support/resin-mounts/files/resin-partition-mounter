@@ -130,7 +130,7 @@ case $action in
             echo "INFO: Mounting $target_path ($target) in $target_mountpoint."
             mount "$target_path" "$target_mountpoint"
             if [ "$target" = "resin-data" ]; then
-                if [ ! -e "$target_mountpoint/swap" ];
+                if [ ! -e "$target_mountpoint/swap" ]; then
                     dd if=/dev/zero of=$target_mountpoint/swap bs=1M count=4096
                     chmod 0600 $target_mountpoint/swap
                     mkswap -L "resin-swap" $target_mountpoint/swap
