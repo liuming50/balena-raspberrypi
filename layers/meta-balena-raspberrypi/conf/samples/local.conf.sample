@@ -89,4 +89,4 @@ HOSTTOOLS += "docker iptables"
 
 # Customized variables
 DEVELOPMENT_IMAGE = "1"
-IMAGE_INSTALL_append = " seeed-voicecard seeed-voicecard-module"
+IMAGE_INSTALL_append = " seeed-voicecard seeed-voicecard-module packagegroup-base i2c-tools"
