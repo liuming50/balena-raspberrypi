@@ -21,7 +21,7 @@ do_compile () {
 
 do_install () {
     install -d ${D}${bindir}
-    install -m 0755 ${S}/seeed-voicecard ${D}${bindir}
+    install -m 0755 ${WORKDIR}/seeed-voicecard ${D}${bindir}
 
     install -d ${D}${sysconfdir}/voicecard
     install -m 0644 ${S}/asound_2mic.conf ${D}${sysconfdir}/voicecard
@@ -30,6 +30,8 @@ do_install () {
     install -m 0644 ${S}/ac108_6mic.state ${D}${sysconfdir}/voicecard
     install -m 0644 ${S}/ac108_asound.state ${D}${sysconfdir}/voicecard
     install -m 0644 ${S}/wm8960_asound.state ${D}${sysconfdir}/voicecard
+
+    lnr ${D}${sysconfdir}/voicecard/asound_4mic.conf ${D}${sysconfdir}/asound.conf
 
     install -d ${D}${systemd_unitdir}/system
     install -m 644 ${S}/seeed-voicecard.service ${D}${systemd_unitdir}/system
