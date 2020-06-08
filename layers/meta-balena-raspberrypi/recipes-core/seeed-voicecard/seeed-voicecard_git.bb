@@ -1,7 +1,9 @@
 SUMMARY = "Seeed-voicecard sound device driver kernel module"
 LICENSE = "CLOSED"
 
-SRC_URI = "git://github.com/respeaker/seeed-voicecard;protocol=https"
+SRC_URI = "git://github.com/respeaker/seeed-voicecard;protocol=https \
+           file://seeed-voicecard \
+          "
 
 SRCREV = "6b4133b5f056fd0218f3ffd197df45fab2ae1ef7"
 PV = "0.0.1+git${SRCPV}"

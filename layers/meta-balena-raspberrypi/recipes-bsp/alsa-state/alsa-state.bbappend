@@ -1,3 +1,3 @@
 do_install_append () {
-    rm -rf ${D}${sysconfdir}/asound.conf
+    rm -rf ${D}${sysconfdir}
 }
